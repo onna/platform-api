@@ -1,8 +1,13 @@
 name: Cron check links in OpenAPI spec
 
+#on:
+#  schedule:
+#    - cron: "0 0 * * 0" # Once a week on Sunday
+
 on:
-  schedule:
-    - cron: "0 0 * * 0" # Once a week on Sunday
+  push:
+    branches:
+      - test-slack-linkcheck
 
 jobs:
   linkChecker:
@@ -21,7 +26,6 @@ jobs:
         uses: ravsamhq/notify-slack-action@v1
         with:
           status: ${{ job.status }}
-          notify_when: 'failure'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
 
