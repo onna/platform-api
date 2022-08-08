@@ -1,4 +1,4 @@
-name: Cron check links in OpenAPI spec
+name: Check links in OpenAPI spec
 
 on:
   schedule:
@@ -15,13 +15,17 @@ jobs:
         uses: lycheeverse/lychee-action@v1.5.0
         with:
           args: --verbose --no-progress api-example.yaml
+          fail: true
 
       - name: Report Status
-        if: steps.lychee.outputs.exit_code != 0
+        #if: steps.lychee.outputs.exit_code != 0
+        if: always()
         uses: ravsamhq/notify-slack-action@v1
         with:
           status: ${{ job.status }}
-          notify_when: 'failure'
+          notify_when: "failure"
+          notification_title: "{workflow} has {status_message}"
+          footer: "Linked Repo <{repo_url}|{repo}> | <{workflow_url}|View Workflow>"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
 
