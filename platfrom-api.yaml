@@ -1,0 +1,3029 @@
+openapi: 3.0.2
+info:
+  contact:
+    email: support@onna.com
+    name: Onna API Team
+    url: 'https://dev.onna.com/help'
+  description: |-
+    # Introduction
+
+    ![Onna](https://developers.onna.com/assets/img/how-onna-works-chart.bdae97e4.png "Diagram showing how Onna connects to various applications")
+
+    The Onna Platform API enables you to programmatically upload your data into our Knowledge Integration Platform.
+    This unlocks the possibility to have all your data in one place
+    and turn it into knowledge—even data we don't support directly with one of [our connectors](https://onna.com/connectors/ "List of available connectors").
+
+    ## Key concepts
+
+    Before starting to use the API, we recommend to become familiar with some key concepts.
+    For more information on the key concepts, see [API basics](https://dev.onna.com/fundamentals/api-basics "Documentation about API basics").
+
+    ## Requirements
+
+    To use this API, you must have an active account on an [Enterprise Plan](https://onna.com/pricing/ "Onna pricing page")
+    and have the [Developer role assigned](https://dev.onna.com/get-started/authentication#assign-developer-role "Sections on how to assign a developer role").
+
+    For more information, see [Requirements](https://dev.onna.com/fundamentals/api-basics#requirements "Section about requirements").
+
+    ## Security
+
+    This API requires that all requests are made using [HTTPS](https://en.wikipedia.org/wiki/HTTPS "Wikipedia entry for HTTPS")
+    and must be [authenticated with a valid token](https://dev.onna.com/get-started/authentication "Article about authentication").
+
+    ## Response codes
+
+    A full list of the response codes returned by this API is available at [Response codes](https://dev.onna.com/fundamentals/response-codes "List of supported response codes").
+
+    ## Versioning
+
+    This API uses semantic versioning to ensure that your client doesn't break.
+    The version is declared in the URL so that you can lock to a specific one by prefix the URL.
+
+    When the version declared in the URL is not supported, you will receive a 400 response.
+
+    For more information, see [Versioning](https://dev.onna.com/fundamentals/api-basics#versioning "Section about versioning").
+
+    ## Date and time format
+
+    This API supports dates and times in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601 "Wikipedia entry for the IS0 8601 standard") format.
+
+    ## Pagination
+
+    This API uses cursoring to divide large sets of results in multiple pages.
+    For more information, see [Pagination](https://dev.onna.com/fundamentals/api-basics/#pagination "Section about supported pagination").
+
+    ## Parameters
+
+    There are many ways to pass parameters when making requests to this API.
+    For more information, see [Parameters](https://dev.onna.com/fundamentals/api-basics#parameters "Section about supported parameters").
+
+    ## Resource types
+
+    You can ingest various type of resources. For more information, see [Resource types](https://dev.onna.com/fundamentals/resource-types "Article about supported resource types").
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+  termsOfService: 'https://dev.onna.com/legal'
+  title: Onna Platform API
+  version: 0.0.1
+servers:
+  - description: Production Server
+    url: 'https://api.onna.com/v1'
+paths:
+  /folders:
+    post:
+      operationId: createFolder
+      summary: Create Folder
+      description: Create a folder in a workspace.
+      parameters:
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFolderRequestBody'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFolderResponseBody'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Folders
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --request POST \
+            --url 'https://api.onna.com/v1/folders' \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Content-Type: application/json' \
+            --header 'Accept: application/json' \
+            --data-raw '{
+              "name": "Foobar",
+              "parent_id": "bar-1234"
+            }'
+  '/folders/{id}':
+    delete:
+      operationId: deleteFolder
+      summary: Delete Folder
+      description: "Delete the folder.\n\U0001F4CC This also deletes all resources contained in it!"
+      parameters:
+        - name: id
+          in: path
+          description: Unique ID of the folder.
+          required: true
+          schema:
+            description: Unique ID of the folder.
+            type: string
+            title: ID
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Folders
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |
+            curl --request DELETE \
+            --url 'https://api.onna.com/v1/folders/foobar' \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Accept: application/json' \
+            --data '{
+                "id": "foobar-1234",
+            }'
+    get:
+      operationId: getFolderInfo
+      summary: Retrieve Folder Info
+      description: Retrieve information related to a folder.
+      parameters:
+        - name: id
+          in: path
+          description: Unique ID of the folder
+          required: true
+          schema:
+            description: Unique ID of the folder
+            type: string
+            title: ID
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadFolderResponseBody'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Folders
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |
+            curl --request GET \
+            --url 'https://api.onna.com/v1/folders/foobar' \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Accept: application/json' \
+            --data '{
+                "id": "foobar-1234",
+            }'
+    patch:
+      operationId: updateFolder
+      summary: Update Folder
+      description: 'Update the folder. For example, rename it from `my-folder` to `my-new-folder`.'
+      parameters:
+        - name: id
+          in: path
+          description: Unique ID of the folder
+          required: true
+          schema:
+            description: Unique ID of the folder
+            type: string
+            title: ID
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFolderRequestBody'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Folders
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --request PATCH 'https://api.onna.com/v1/folders/foobar-123' \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Content-Type: application/json' \
+            --header 'Accept: application/json' \
+            --data-raw '{
+              "name": "foobar-abc"
+            }'
+  /health:
+    get:
+      operationId: healthResponse
+      summary: Health Check
+      description: 'Check service status, version and build.'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponseBody'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Utils
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |
+            curl --request GET \
+            --url 'https://api.onna.com/v1/health' \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Accept: application/json' \
+  /oauth/token:
+    post:
+      operationId: clientLoginResponse
+      summary: Login
+      description: Exchange credentials for an access token
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_login_oauth_token_post'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientLoginResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Authentication
+  /oauth/user:
+    get:
+      operationId: currentUser
+      summary: Current User
+      description: Return information about the currently authenticated user.
+      parameters:
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Authentication
+  /resources/files:
+    post:
+      operationId: createFile
+      summary: Create File
+      description: Create a file resource.
+      parameters:
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFileBody'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFileResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+      tags:
+        - Files
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --request POST 'https://api.onna.com/v1/resources/files' \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Content-Type: application/json' \
+            --data-raw '{
+              "onna_parent_id": "0ec85634bf2c4d8db453a65551c36b8d",
+              "ref": "Creativecommons-what-is-creative-commons_eng",
+              "url": "https://wiki.creativecommons.org/images/3/35/Creativecommons-what-is-creative-commons_eng.pdf",
+              "comment": "Creative commons PDF",
+              "creation_date": "2022-07-21T09:02:40.083388+00:00",
+              "creator": "Creative commons ORG",
+              "description": "Creative commons PDF",
+              "mime_type": "application/pdf",
+              "name": "Creativecommons-what-is-creative-commons_eng.pdf",
+              "path": "/images/3/35",
+              "tags": [
+                "creative common"
+              ],
+              "type": "pdf",
+              "update_date": "2022-07-21T09:02:40.083388+00:00",
+              "updater": "Bob"
+            }'
+  '/resources/files/{id}':
+    delete:
+      operationId: deleteFile
+      summary: Delete File
+      description: Delete the file.
+      parameters:
+        - name: id
+          in: path
+          description: Unique ID of the file.
+          required: true
+          schema:
+            description: Unique ID of the file.
+            type: string
+            title: ID
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Files
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --request DELETE 'https://api.onna.com/v1/resources/files/foobar \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Accept: application/json'
+    get:
+      operationId: retrieveFile
+      summary: Read File
+      description: Retrieve a file resource.
+      parameters:
+        - name: id
+          in: path
+          description: Unique ID of the file.
+          required: true
+          schema:
+            description: Unique ID of the file.
+            type: string
+            title: ID
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadFileResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Files
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --request GET 'https://api.onna.com/v1/resources/files/conse \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Accept: application/json'
+  /resources/tickets:
+    post:
+      operationId: createTicket
+      summary: Create Ticket
+      description: Create a ticket resource.
+      parameters:
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTicketBody'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTicketResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Tickets
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --request POST 'https://api.onna.com/v1/resources/tickets' \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Content-Type: application/json' \
+            --header 'Accept: application/json' \
+            --data-raw '{
+              "name": "CS0001401",
+              "onna_parent_id": "da72de92fef04c6a9cc5cfe018fa9cd6",
+              "ref": "f352dc9387632300d6b0a7da0acb0b60",
+              "url": "https://instance.servicenow.com/api/sn_customerservice/case/f352dc9387632300d6b0a7da0acb0b60"
+            }'
+  '/resources/tickets/{id}':
+    delete:
+      operationId: deleteTicket
+      summary: Delete Ticket
+      description: Delete the ticket.
+      parameters:
+        - name: id
+          in: path
+          description: Unique ID of the ticket.
+          required: true
+          schema:
+            description: Unique ID of the ticket.
+            type: string
+            title: ID
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Tickets
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --request DELETE 'https://api.onna.com/v1/resources/tickets/foobar \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Accept: application/json'
+    get:
+      operationId: retrieveTicket
+      summary: Read Ticket
+      description: Retrieve a ticket resource.
+      parameters:
+        - name: id
+          in: path
+          description: Unique ID of the ticket.
+          required: true
+          schema:
+            description: Unique ID of the ticket.
+            type: string
+            title: ID
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadTicketResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Tickets
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --request GET 'https://api.onna.com/v1/resources/tickets/my-ticket \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Accept: application/json'
+  '/upload/{id}/tus':
+    head:
+      description: '[HEAD](https://tus.io/protocols/resumable-upload.html#head) a resource''s file, for use with the TUS protocol.'
+      operationId: headUploads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Id
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors405'
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors412'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      summary: Head Resource File Resumable Upload
+      tags:
+        - Upload
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl -i 'https://api.onna.com/v1/upload/d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0/tus' \
+              -X 'HEAD' \
+              -H 'authorization: Bearer d3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0d3m0d3m0d3m0' \
+              -H 'content-type: application/offset+octet-stream' \
+              -H 'tus-resumable: 1.0.0' \
+              
+    options:
+      description: 'TUS [OPTIONS](https://tus.io/protocols/resumable-upload.html#options) may be used to gather information about the Server''s current configuration.'
+      operationId: optionsUploads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Id
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      summary: Options Resource File
+      tags:
+        - Upload
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |
+            curl -i 'https://api.onna.com/v1/upload/d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0/tus' \
+              -X 'OPTIONS' \
+              -H 'authorization: Bearer d3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0d3m0d3m0d3m0' \
+              -H 'content-type: application/offset+octet-stream' \
+    patch:
+      operationId: patchUploads
+      summary: Resume Resource File Upload
+      description: 'TUS [PATCH](https://tus.io/protocols/resumable-upload.html#patch) applies partial modifications to a resource.'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Id
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors405'
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors412'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+      tags:
+        - Upload
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl 'https://api.onna.com/v1/upload/d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0/tus' \
+              -X 'PATCH' \
+              -H 'authorization: Bearer d3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0d3m0d3m0d3m0' \
+              -H 'content-type: application/offset+octet-stream' \
+              -H 'tus-resumable: 1.0.0' \
+              -H 'upload-offset: 0' \
+              --data-raw $'%PDF-1.4\v3ryl0ngstr1ng0fR4wD4t4' \
+              --compressed
+    post:
+      operationId: postUploads
+      summary: Create Resource File Resumable Upload
+      description: |-
+        TUS [CREATION](https://tus.io/protocols/resumable-upload.html#creation) endpoint.
+
+        The created file has the same URL as the current endpoint, since a resource can only have a single file.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Id
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors405'
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors412'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Upload
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl 'https://api.onna.com/v1/upload/d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0/tus' \
+              -X 'POST' \
+              -H 'authorization: Bearer d3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0d3m0d3m0d3m0' \
+              -H 'content-length: 0' \
+              -H 'tus-resumable: 1.0.0' \
+              -H 'upload-length: 44251' \
+              -H 'upload-metadata: name Q3JlYXRpdmVjb21tb25zLXdoYXQtaXMtY3JlYXRpdmUtY29tbW9uc19lbmcucGRm' \
+              --compressed
+    put:
+      operationId: putUploads
+      summary: Create Resource File Single Request
+      description: 'Create single request for resource file upload. '
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Id
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '201':
+          description: Successful Response
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Upload
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl -i 'https://api.onna.com/v1/upload/d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0/tus' \
+              -X 'PUT' \
+              -H 'authorization: Bearer d3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0d3m0d3m0d3m0' \
+              -H 'content-type: application/offset+octet-stream' \
+  /workspaces:
+    get:
+      operationId: listWorkspaces
+      summary: List Workspaces
+      description: List workspaces.
+      parameters:
+        - name: cursor
+          in: query
+          description: cursor is a common query parameter
+          required: false
+          schema:
+            description: cursor is a common query parameter
+            type: string
+            title: Cursor
+          example: '2022-02-22 11:11:11.12345//d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0'
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponseBody'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Workspaces
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --location --request GET 'https://api.onna.com/v1/workspaces?cursor=100 \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Accept: application/json'
+    post:
+      operationId: createWorkspace
+      summary: Create Workspace
+      description: Create a workspace.
+      parameters:
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkspaceRequestBody'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateWorkspaceResponseBody'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Workspaces
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |
+            curl --request POST \
+            --url 'https://api.onna.com/v1/workspaces' \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Content-Type: application/json' \
+            --header 'Accept: application/json' \
+            --data-raw '{
+              "name": "Project X",
+              "description": "Important project",
+              "tags": [
+                "top secret"
+              ]
+            }'
+  '/workspaces/{id}':
+    delete:
+      operationId: deleteWorkspace
+      summary: Delete Workspace
+      description: Delete a Workspace.
+      parameters:
+        - name: id
+          in: path
+          description: Unique ID of the workspace.
+          required: true
+          schema:
+            description: Unique ID of the workspace.
+            type: string
+            title: Workspace ID
+          example: myworkspace-ZPM9Jf4zQ
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Workspaces
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --location --request DELETE 'https://api.onna.com/v1/workspaces/myworkspace-ZPM9Jf4zQ \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Accept: application/json'
+    get:
+      operationId: retrieveWorkspaceInfo
+      summary: Retrieve Workspace Info
+      description: Retrieve information related to a workspace.
+      parameters:
+        - name: id
+          in: path
+          description: Unique ID of the workspace.
+          required: true
+          schema:
+            description: Unique ID of the workspace.
+            type: string
+            title: Workspace ID
+          example: myworkspace-ZPM9Jf4zQ
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceResponseBody'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Workspaces
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --location --request GET 'https://api.onna.com/v1/workspaces/myworkspace-ZPM9Jf4zQ \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Accept: application/json
+    patch:
+      operationId: updateWorkspace
+      summary: Update Workspace
+      description: 'Update the workspace. For example, rename it from `my-workspace` to `my-new-workspace`.'
+      parameters:
+        - name: id
+          in: path
+          description: Unique ID of the workspace.
+          required: true
+          schema:
+            description: Unique ID of the workspace.
+            type: string
+            title: Workspace ID
+          example: myworkspace-ZPM9Jf4zQ
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkspaceRequestBody'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - Workspaces
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --location --request PATCH 'https://api.onna.com/v1/workspaces/myworkspace-ZPM9Jf4zQ' \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Content-Type: application/json' \
+            --header 'Accept: application/json' \
+            --data-raw '{
+              "description": "A random workspace",
+              "name": "my-new-workspace",
+              "tags": [
+                "random",
+                "my-company"
+              ]
+            }'
+components:
+  schemas:
+    Body_login_oauth_token_post:
+      type: object
+      properties:
+        client_id:
+          type: string
+          title: Client Id
+        client_secret:
+          type: string
+          title: Client Secret
+        grant_type:
+          type: string
+          default: client_credential
+          title: Grant Type
+      title: Body_login_oauth_token_post
+    ClientLoginResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          title: Access Token
+        expires_in:
+          type: integer
+          default: 0
+          title: Expires In
+        token_type:
+          type: string
+          title: Token Type
+      required:
+        - access_token
+        - token_type
+      title: ClientLoginResponse
+    CreateFileBody:
+      type: object
+      properties:
+        comment:
+          description: Comment type of file.
+          type: string
+          title: Comment
+        creation_date:
+          description: Date when file was created.
+          type: string
+          title: Creation Date
+        creator:
+          description: User that created the file.
+          type: string
+          title: Creator
+        deleter:
+          description: User that deleted the file.
+          type: string
+          title: Deleter
+        deletion_date:
+          description: Date when file was deleted.
+          type: string
+          title: Deletion Date
+        description:
+          description: File description.
+          type: string
+          title: Description
+        mime_type:
+          description: MIME type of file.
+          type: string
+          title: Mime Type
+        name:
+          description: File name.
+          type: string
+          title: Name
+        onna_parent_id:
+          description: The ID of the parent Workspace or Folder.
+          type: string
+          title: Parent ID
+        path:
+          description: 'Path to file, at the origin.'
+          type: string
+          title: Path
+        ref:
+          description: The Reference Number or ID for the file at the origin.
+          type: string
+          title: Reference
+        share_url:
+          description: Link or invite to share file (at origin).
+          type: string
+          title: Share URL
+        status:
+          description: 'File status: Deleted, Archived, etc.'
+          type: string
+          title: Status
+        tags:
+          description: List of tags associated to the file in the origin.
+          type: array
+          items:
+            type: string
+          title: Tags
+        type:
+          description: Type of file.
+          type: string
+          title: Type
+        update_date:
+          description: Date when the file was last updated.
+          type: string
+          title: Update Date
+        updater:
+          description: The last user to update the file.
+          type: string
+          title: Updater
+        url:
+          description: A Unique Resource Locator for the file at the origin.
+          type: string
+          title: URL
+        version:
+          description: Version.
+          type: string
+          title: Version
+      example:
+        onna_parent_id: da72de92fef04c6a9cc5cfe018fa9cd6
+      additionalProperties: false
+      required:
+        - onna_parent_id
+        - ref
+        - url
+      title: CreateFileBody
+    CreateFileResponse:
+      type: object
+      properties:
+        onna_id:
+          description: The ID for the Onna resource.
+          type: string
+          title: Onna ID
+      additionalProperties: false
+      required:
+        - onna_id
+      title: CreateFileResponse
+    CreateFolderRequestBody:
+      type: object
+      properties:
+        name:
+          description: Display name of the Folder.
+          type: string
+          title: Name
+        onna_parent_id:
+          description: The ID of the parent Workspace or Folder.
+          type: string
+          title: Parent ID
+      example:
+        name: Foobar
+        onna_parent_id: 5ca9162054d84ec9850732664be18cf4
+      additionalProperties: false
+      required:
+        - name
+        - onna_parent_id
+      title: CreateFolderRequestBody
+    CreateFolderResponseBody:
+      type: object
+      properties:
+        onna_id:
+          description: Unique identifier for the Folder.
+          type: string
+          title: Onna ID
+      example:
+        onna_id: 8a8ead66ba6f4862b922a911dd67c439
+      additionalProperties: false
+      required:
+        - onna_id
+      title: CreateFolderResponseBody
+    CreateTicketBody:
+      type: object
+      properties:
+        assignee_group:
+          description: Assignee group.
+          type: string
+          title: Assignee Group
+        assignees:
+          description: List of users assigned to the ticket.
+          type: array
+          items:
+            type: string
+          title: Assignees
+        author:
+          description: The user that created the ticket.
+          type: string
+          title: Author
+        category:
+          description: Category.
+          type: string
+          title: Category
+        comments:
+          description: List of messages associated to the ticket.
+          type: array
+          items:
+            $ref: '#/components/schemas/TicketMessages'
+          title: Comments
+        creation_date:
+          description: Date when the ticket was created.
+          type: string
+          title: Creation Date
+        description:
+          description: Description.
+          type: string
+          title: Description
+        followers:
+          description: List of users following the ticket.
+          type: array
+          items:
+            type: string
+          title: Followers
+        name:
+          description: Title.
+          type: string
+          title: Name
+        onna_parent_id:
+          description: The ID of the parent Folder.
+          type: string
+          title: Parent ID
+        priority:
+          description: 'Priority: high, medium, low, etc.'
+          type: string
+          title: Priority
+        reactions:
+          description: List of reactions.
+          type: array
+          items:
+            type: string
+          title: Reactions
+        ref:
+          description: The Reference Number or ID for the ticket at the origin.
+          type: string
+          title: Reference
+        requester:
+          description: The user that requested the ticket.
+          type: string
+          title: Requester
+        severity:
+          description: 'Severity: high, medium, low, etc.'
+          type: string
+          title: Severity
+        status:
+          description: 'Ticket status: open, closed, archived, etc.'
+          type: string
+          title: Status
+        subcategory:
+          description: Subcategory.
+          type: string
+          title: Subcategory
+        tags:
+          description: List of tags associated to the ticket in the origin.
+          type: array
+          items:
+            type: string
+          title: Tags
+        type:
+          description: Type of ticket.
+          type: string
+          title: Type
+        update_date:
+          description: Date when the ticket was last updated.
+          type: string
+          title: Update Date
+        updater:
+          description: The last user to update the ticket.
+          type: string
+          title: Updater
+        url:
+          description: A Unique Resource Locator for the ticket at the origin.
+          type: string
+          title: URL
+      example:
+        name: CS0001401
+        onna_parent_id: da72de92fef04c6a9cc5cfe018fa9cd6
+        ref: f352dc9387632300d6b0a7da0acb0b60
+        url: 'https://instance.servicenow.com/api/sn_customerservice/case/f352dc9387632300d6b0a7da0acb0b60'
+      additionalProperties: false
+      required:
+        - onna_parent_id
+        - ref
+        - url
+        - name
+      title: CreateTicketBody
+    CreateTicketResponse:
+      type: object
+      properties:
+        onna_id:
+          description: The ID for the Onna resource.
+          type: string
+          title: Onna ID
+      additionalProperties: false
+      required:
+        - onna_id
+      title: CreateTicketResponse
+    CreateWorkspaceRequestBody:
+      type: object
+      properties:
+        description:
+          description: Short description of the workspace.
+          type: string
+          title: Description
+        name:
+          description: Display name of the workspace.
+          type: string
+          title: Name
+        tags:
+          description: Labels attached to the workspace for the purpose of identification or to give meta information.
+          type: array
+          items:
+            type: string
+          title: Tags
+      example:
+        description: A collection of Acmecorp Inc. support tickets from different apps.
+        name: Acmecorp support tickets
+        tags:
+          - support
+          - zendesk
+          - acemcorp
+          - tickets
+      additionalProperties: false
+      required:
+        - name
+      title: CreateWorkspaceRequestBody
+    CreateWorkspaceResponseBody:
+      type: object
+      properties:
+        onna_id:
+          description: Alphanumeric unique identifier of the workspace.
+          type: string
+          title: Onna ID
+      example:
+        onna_id: 5ca9162054d84ec9850732664be18cf4
+      required:
+        - onna_id
+      title: CreateWorkspaceResponseBody
+    CurrentUser:
+      type: object
+      properties:
+        account_id:
+          description: The ID of the account to which the user is associated.
+          type: string
+          title: Account ID
+        id:
+          description: Unique identifier of the current user. For most users this will be the same as the email.
+          type: string
+          title: ID
+        name:
+          description: Name of the authenticated user.
+          type: string
+          title: Name
+        surname:
+          description: Surname of the authenticated user.
+          type: string
+          title: Surname
+      additionalProperties: false
+      required:
+        - id
+        - account_id
+        - name
+      title: CurrentUser
+    HTTPValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+      title: HTTPValidationError
+    HealthResponseBody:
+      type: object
+      properties:
+        release_id:
+          description: Service version.
+          type: string
+          title: Release Id
+        service_id:
+          description: Unique ID for the service.
+          type: string
+          title: Service Id
+        status:
+          description: Result of the status check as 'pass' or 'fail'.
+          type: string
+          title: Status
+        version:
+          description: API version.
+          type: string
+          title: Version
+      example:
+        release_id: 0.0.1
+        service_id: public-api
+        status: pass
+        version: v1
+      additionalProperties: false
+      required:
+        - status
+        - service_id
+        - version
+        - release_id
+      title: HealthResponseBody
+    JsonApiErrors401:
+      description: 'JSON:API "error object": https://jsonapi.org/format/#errors'
+      type: object
+      properties:
+        code:
+          description: 'An application-specific error code, expressed as a string value.'
+          type: string
+          title: Code
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+          title: Detail
+        id:
+          description: A unique identifier for this particular occurrence of the problem.
+          type: string
+          title: ID
+        links:
+          description: Leads to further details about this occurrence of the problem.
+          type: object
+          title: Links
+        source:
+          description: An object containing references to the source of the error.
+          type: object
+          title: Source
+        status:
+          description: 'The HTTP status code applicable to this problem, expressed as a string value.'
+          type: string
+          title: Status
+        title:
+          description: 'A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem.'
+          type: string
+          title: Title
+      example:
+        errors:
+          - code: XX401_unauthorized
+            id: 1bd5c180-d2c5-4bfb-9444-a3a19dd9926b
+            status: '401'
+      additionalProperties: false
+      required:
+        - status
+        - code
+      title: JsonApiErrors401
+    JsonApiErrors403:
+      description: 'JSON:API "error object": https://jsonapi.org/format/#errors'
+      type: object
+      properties:
+        code:
+          description: 'An application-specific error code, expressed as a string value.'
+          type: string
+          title: Code
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+          title: Detail
+        id:
+          description: A unique identifier for this particular occurrence of the problem.
+          type: string
+          title: ID
+        links:
+          description: Leads to further details about this occurrence of the problem.
+          type: object
+          title: Links
+        source:
+          description: An object containing references to the source of the error.
+          type: object
+          title: Source
+        status:
+          description: 'The HTTP status code applicable to this problem, expressed as a string value.'
+          type: string
+          title: Status
+        title:
+          description: 'A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem.'
+          type: string
+          title: Title
+      example:
+        errors:
+          - code: XX403_forbidden
+            id: 1bd5c180-d2c5-4bfb-9444-a3a19dd9926b
+            status: '403'
+      additionalProperties: false
+      required:
+        - status
+        - code
+      title: JsonApiErrors403
+    JsonApiErrors404:
+      description: 'JSON:API "error object": https://jsonapi.org/format/#errors'
+      type: object
+      properties:
+        code:
+          description: 'An application-specific error code, expressed as a string value.'
+          type: string
+          title: Code
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+          title: Detail
+        id:
+          description: A unique identifier for this particular occurrence of the problem.
+          type: string
+          title: ID
+        links:
+          description: Leads to further details about this occurrence of the problem.
+          type: object
+          title: Links
+        source:
+          description: An object containing references to the source of the error.
+          type: object
+          title: Source
+        status:
+          description: 'The HTTP status code applicable to this problem, expressed as a string value.'
+          type: string
+          title: Status
+        title:
+          description: 'A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem.'
+          type: string
+          title: Title
+      example:
+        errors:
+          - code: XX404_not_found
+            id: 1bd5c180-d2c5-4bfb-9444-a3a19dd9926b
+            status: '404'
+      additionalProperties: false
+      required:
+        - status
+        - code
+      title: JsonApiErrors404
+    JsonApiErrors405:
+      description: 'JSON:API "error object": https://jsonapi.org/format/#errors'
+      type: object
+      properties:
+        code:
+          description: 'An application-specific error code, expressed as a string value.'
+          type: string
+          title: Code
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+          title: Detail
+        id:
+          description: A unique identifier for this particular occurrence of the problem.
+          type: string
+          title: ID
+        links:
+          description: Leads to further details about this occurrence of the problem.
+          type: object
+          title: Links
+        source:
+          description: An object containing references to the source of the error.
+          type: object
+          title: Source
+        status:
+          description: 'The HTTP status code applicable to this problem, expressed as a string value.'
+          type: string
+          title: Status
+        title:
+          description: 'A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem.'
+          type: string
+          title: Title
+      example:
+        errors:
+          - code: XX405_method_not_allowed
+            id: 1bd5c180-d2c5-4bfb-9444-a3a19dd9926b
+            status: '405'
+      additionalProperties: false
+      required:
+        - status
+        - code
+      title: JsonApiErrors405
+    JsonApiErrors412:
+      description: 'JSON:API "error object": https://jsonapi.org/format/#errors'
+      type: object
+      properties:
+        code:
+          description: 'An application-specific error code, expressed as a string value.'
+          type: string
+          title: Code
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+          title: Detail
+        id:
+          description: A unique identifier for this particular occurrence of the problem.
+          type: string
+          title: ID
+        links:
+          description: Leads to further details about this occurrence of the problem.
+          type: object
+          title: Links
+        source:
+          description: An object containing references to the source of the error.
+          type: object
+          title: Source
+        status:
+          description: 'The HTTP status code applicable to this problem, expressed as a string value.'
+          type: string
+          title: Status
+        title:
+          description: 'A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem.'
+          type: string
+          title: Title
+      example:
+        errors:
+          - code: XX412_precondition_failed
+            id: 1bd5c180-d2c5-4bfb-9444-a3a19dd9926b
+            status: '412'
+      additionalProperties: false
+      required:
+        - status
+        - code
+      title: JsonApiErrors412
+    JsonApiErrors422:
+      description: 'JSON:API "error object": https://jsonapi.org/format/#errors'
+      type: object
+      properties:
+        code:
+          description: 'An application-specific error code, expressed as a string value.'
+          type: string
+          title: Code
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+          title: Detail
+        id:
+          description: A unique identifier for this particular occurrence of the problem.
+          type: string
+          title: ID
+        links:
+          description: Leads to further details about this occurrence of the problem.
+          type: object
+          title: Links
+        source:
+          description: An object containing references to the source of the error.
+          type: object
+          title: Source
+        status:
+          description: 'The HTTP status code applicable to this problem, expressed as a string value.'
+          type: string
+          title: Status
+        title:
+          description: 'A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem.'
+          type: string
+          title: Title
+      example:
+        errors:
+          - code: XX422_unprocessable_entity
+            id: 1bd5c180-d2c5-4bfb-9444-a3a19dd9926b
+            status: '422'
+      additionalProperties: false
+      required:
+        - status
+        - code
+      title: JsonApiErrors422
+    JsonApiErrors500:
+      description: 'JSON:API "error object": https://jsonapi.org/format/#errors'
+      type: object
+      properties:
+        code:
+          description: 'An application-specific error code, expressed as a string value.'
+          type: string
+          title: Code
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+          title: Detail
+        id:
+          description: A unique identifier for this particular occurrence of the problem.
+          type: string
+          title: ID
+        links:
+          description: Leads to further details about this occurrence of the problem.
+          type: object
+          title: Links
+        source:
+          description: An object containing references to the source of the error.
+          type: object
+          title: Source
+        status:
+          description: 'The HTTP status code applicable to this problem, expressed as a string value.'
+          type: string
+          title: Status
+        title:
+          description: 'A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem.'
+          type: string
+          title: Title
+      example:
+        errors:
+          - code: XX500_internal_server_error
+            id: 1bd5c180-d2c5-4bfb-9444-a3a19dd9926b
+            status: '500'
+      additionalProperties: false
+      required:
+        - status
+        - code
+      title: JsonApiErrors500
+    PageItemResponseBody:
+      type: object
+      properties:
+        name:
+          description: Item name
+          type: string
+          default: ''
+          title: Name
+        onna_id:
+          description: Item identifier
+          type: string
+          title: Onna Id
+      required:
+        - onna_id
+      title: PageItemResponseBody
+    PageResponseBody:
+      type: object
+      properties:
+        cursor:
+          description: Is the parameter to get the next page
+          type: string
+          title: Cursor
+        items:
+          description: List of results
+          type: array
+          items:
+            $ref: '#/components/schemas/PageItemResponseBody'
+          title: Items
+      required:
+        - items
+      title: PageResponseBody
+    ReadFileResponse:
+      type: object
+      properties:
+        comment:
+          description: Comment type of file.
+          type: string
+          title: Comment
+        creation_date:
+          description: Date when file was created.
+          type: string
+          title: Creation Date
+        creator:
+          description: User that created the file.
+          type: string
+          title: Creator
+        deleter:
+          description: User that deleted the file.
+          type: string
+          title: Deleter
+        deletion_date:
+          description: Date when file was deleted.
+          type: string
+          title: Deletion Date
+        description:
+          description: File description.
+          type: string
+          title: Description
+        extension:
+          description: File extension.
+          type: string
+          title: Extension
+        filename:
+          description: File name.
+          type: string
+          title: Filename
+        md5:
+          description: MD5 hash.
+          type: string
+          title: Md5
+        mime_type:
+          description: MIME type of file.
+          type: string
+          title: Mime Type
+        name:
+          description: File name.
+          type: string
+          title: Name
+        onna_id:
+          description: The ID for the Onna resource.
+          type: string
+          title: Onna ID
+        onna_parent_id:
+          description: The ID of the parent Workspace or Folder.
+          type: string
+          title: Parent ID
+        onna_url:
+          description: The URL for the Onna resource.
+          type: string
+          title: Onna URL
+        path:
+          description: 'Path to file, at the origin.'
+          type: string
+          title: Path
+        ref:
+          description: The Reference Number or ID for the file at the origin.
+          type: string
+          title: Reference
+        share_url:
+          description: Link or invite to share file (at origin).
+          type: string
+          title: Share URL
+        size:
+          description: Binary size.
+          type: integer
+          title: Size
+        status:
+          description: 'File status: Deleted, Archived, etc.'
+          type: string
+          title: Status
+        tags:
+          description: List of tags associated to the file in the origin.
+          type: array
+          items:
+            type: string
+          title: Tags
+        type:
+          description: Type of file.
+          type: string
+          title: Type
+        update_date:
+          description: Date when the file was last updated.
+          type: string
+          title: Update Date
+        updater:
+          description: The last user to update the file.
+          type: string
+          title: Updater
+        url:
+          description: A Unique Resource Locator for the file at the origin.
+          type: string
+          title: URL
+        version:
+          description: Version.
+          type: string
+          title: Version
+      example:
+        onna_parent_id: da72de92fef04c6a9cc5cfe018fa9cd6
+      additionalProperties: false
+      required:
+        - onna_parent_id
+        - ref
+        - url
+        - onna_id
+        - onna_url
+      title: ReadFileResponse
+    ReadFolderResponseBody:
+      type: object
+      properties:
+        name:
+          description: Display name of the Folder.
+          type: string
+          title: Name
+        onna_id:
+          description: Unique identifier for the Folder.
+          type: string
+          title: Onna ID
+      example:
+        name: Foobar
+        onna_id: 8a8ead66ba6f4862b922a911dd67c439
+      additionalProperties: false
+      required:
+        - onna_id
+        - name
+      title: ReadFolderResponseBody
+    ReadTicketResponse:
+      type: object
+      properties:
+        assignee_group:
+          description: Assignee group.
+          type: string
+          title: Assignee Group
+        assignees:
+          description: List of users assigned to the ticket.
+          type: array
+          items:
+            type: string
+          title: Assignees
+        author:
+          description: The user that created the ticket.
+          type: string
+          title: Author
+        category:
+          description: Category.
+          type: string
+          title: Category
+        comments:
+          description: List of messages associated to the ticket.
+          type: array
+          items:
+            $ref: '#/components/schemas/TicketMessages'
+          title: Comments
+        creation_date:
+          description: Date when the ticket was created.
+          type: string
+          title: Creation Date
+        description:
+          description: Description.
+          type: string
+          title: Description
+        followers:
+          description: List of users following the ticket.
+          type: array
+          items:
+            type: string
+          title: Followers
+        name:
+          description: Title.
+          type: string
+          title: Name
+        onna_id:
+          description: The ID for the Onna resource.
+          type: string
+          title: Onna ID
+        onna_parent_id:
+          description: The ID of the parent Folder.
+          type: string
+          title: Parent ID
+        onna_url:
+          description: The URL for the Onna resource.
+          type: string
+          title: Onna URL
+        priority:
+          description: 'Priority: high, medium, low, etc.'
+          type: string
+          title: Priority
+        reactions:
+          description: List of reactions.
+          type: array
+          items:
+            type: string
+          title: Reactions
+        ref:
+          description: The Reference Number or ID for the ticket at the origin.
+          type: string
+          title: Reference
+        requester:
+          description: The user that requested the ticket.
+          type: string
+          title: Requester
+        severity:
+          description: 'Severity: high, medium, low, etc.'
+          type: string
+          title: Severity
+        status:
+          description: 'Ticket status: open, closed, archived, etc.'
+          type: string
+          title: Status
+        subcategory:
+          description: Subcategory.
+          type: string
+          title: Subcategory
+        tags:
+          description: List of tags associated to the ticket in the origin.
+          type: array
+          items:
+            type: string
+          title: Tags
+        type:
+          description: Type of ticket.
+          type: string
+          title: Type
+        update_date:
+          description: Date when the ticket was last updated.
+          type: string
+          title: Update Date
+        updater:
+          description: The last user to update the ticket.
+          type: string
+          title: Updater
+        url:
+          description: A Unique Resource Locator for the ticket at the origin.
+          type: string
+          title: URL
+      example:
+        name: CS0001401
+        onna_parent_id: da72de92fef04c6a9cc5cfe018fa9cd6
+        ref: f352dc9387632300d6b0a7da0acb0b60
+        url: 'https://instance.servicenow.com/api/sn_customerservice/case/f352dc9387632300d6b0a7da0acb0b60'
+      additionalProperties: false
+      required:
+        - onna_parent_id
+        - ref
+        - url
+        - name
+        - onna_id
+        - onna_url
+      title: ReadTicketResponse
+    TicketMessages:
+      type: object
+      properties:
+        author:
+          type: string
+          title: Author
+        creation_date:
+          type: string
+          title: Creation Date
+        text:
+          type: string
+          title: Text
+      additionalProperties: false
+      required:
+        - author
+        - creation_date
+        - text
+      title: TicketMessages
+    UpdateFolderRequestBody:
+      type: object
+      properties:
+        name:
+          description: Display name of the Folder.
+          type: string
+          title: Name
+      example:
+        name: Foobar
+      additionalProperties: false
+      required:
+        - name
+      title: UpdateFolderRequestBody
+    UpdateWorkspaceRequestBody:
+      type: object
+      properties:
+        description:
+          description: Short description of the workspace.
+          type: string
+          title: Description
+        name:
+          description: Display name of the workspace.
+          type: string
+          title: Name
+        tags:
+          description: Labels attached to the workspace for the purpose of identification or to give meta information.
+          type: array
+          items:
+            type: string
+          title: Tags
+      example:
+        description: A collection of Acmecorp Inc. support tickets from different apps.
+        name: Acmecorp support tickets
+        tags:
+          - support
+          - zendesk
+          - acemcorp
+          - tickets
+      additionalProperties: false
+      title: UpdateWorkspaceRequestBody
+    ValidationError:
+      type: object
+      properties:
+        loc:
+          type: array
+          items:
+            type: string
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+    WorkspaceResponseBody:
+      type: object
+      properties:
+        creation_datetime:
+          description: 'The date and time when the workspace was created. The format follows the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard, with up to microsecond precision.'
+          type: string
+          default: ''
+          title: Creation Datetime
+        description:
+          description: Short description of the workspace.
+          type: string
+          default: ''
+          title: Description
+        modification_datetime:
+          description: 'The date and time when the workspace was last updated. The format follows the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard, with up to  microsecond precision. Updates include editing metadata, sharing, and tagging the workspace.'
+          type: string
+          default: ''
+          title: Modification Datetime
+        name:
+          description: Display name of the workspace.
+          type: string
+          title: Name
+        onna_id:
+          description: Alphanumeric unique identifier of the workspace.
+          type: string
+          title: Onna ID
+        tags:
+          description: Labels attached to the workspace for the purpose of identification or to give meta information.
+          type: array
+          items:
+            type: string
+          default: []
+          title: Tags
+      example:
+        description: A collection of Acmecorp Inc. support tickets from different apps.
+        name: Acmecorp support tickets
+        onna_id: 5ca9162054d84ec9850732664be18cf4
+        tags:
+          - support
+          - zendesk
+          - acemcorp
+          - tickets
+      required:
+        - onna_id
+        - name
+      title: WorkspaceResponseBody
+  securitySchemes:
+    OAuth2:
+      description: The Onna API uses API keys to authenticate requests.
+      flows:
+        clientCredentials:
+          scopes: {}
+          tokenUrl: 'https://api.onna.com/v1/auth/token'
+      type: oauth2
+tags:
+  - description: |-
+      Our API uses OAuth 2's Client Credentials Grant to authenticate your requests.
+      This grant type is especially suited for machine-to-machine (M2M) applications,
+      such as the applications you build on top of the Onna platform.
+
+      For more information please check our detailed [authentication docs](https://dev.onna.com/fundamentals/authentication).
+    name: Authentication
+  - description: |-
+      Workspaces are locations where you can collect data coming from different sources, organize it,
+      and collaborate with other members of your team.
+
+      You can share workspaces with collaborators with various permission levels and roles.
+      Permission levels are dependent on the type of expected collaboration.
+      You can also search across an entire workspace and export the results of your searches or entire data collections.
+
+      This collection includes all the endpoints that enable you to work and collaborate inside workspaces.
+    name: Workspaces
+  - description: |-
+      Folders are containers for your files or other folders. A place where you can group your resources together, like in any desktop operating system.
+
+      This collection includes all the endpoints that enable you to handle folders, such as creating, retrieving, or deleting them.
+    name: Folders
+  - description: |-
+      You can ingest a wide range of raw files.
+
+      Here's the details of what raw files you can view in the UI:
+
+      - Media (Audio, Video, Images)
+      - PDFs
+      - Microsoft Documents (DOC, DOCX, PPT, PPTX), rendered as PDFs
+      - Microsoft Spreadsheets (Worksheets rendered as tabs)
+      - Plain text (CSV, TXT), rendered as PDFs
+      - Emails (EML, MSG)
+      - Web pages (HTM, HTML)
+      - Code
+
+      For more information,please check our docs about [raw-files](https://dev.onna.com/fundamentals/resource-types#raw-files "Link to docs site about raw-file ingestion") ingestion.
+    name: Files
+  - description: |-
+      The `Ticket` resource type defines resources with which two parties communicate to track work to resolve issues
+      or deliver incremental value. Customer support requests, service desk tickets, or software development projects are
+      some examples of what can be mapped to this resource type.
+
+      Read our developer documentation to learn more about the [Ticket resource type](https://dev.onna.com/fundamentals/resource-types#ticket).
+    name: Tickets
+  - description: |-
+      A generic endpoint to upload a raw file to an existing resource (ticket, file, etc).
+
+      Our upload engine is based on the [TUS protocol](https://tus.io/ "TUS protocol website") and treats every upload as a resumable file upload.
+
+      Check our get [started guide](https://dev.onna.com/get-started/hello-world?_highlight=tus#initialize-tus "Get started with TUS and the platform API").
+
+      Whatever the programming language you're using, it's possible that there's a library that integrates this protocol.
+
+      For more information about TUS, see the [TUS documentation](https://tus.io/protocols/resumable-upload.html "TUS protocol documentation").
+    name: Upload
+  - description: 'API Utils, such as the `health` endpoint.'
+    name: Utils
+security:
+  - OAuth2: []
