@@ -65,7 +65,7 @@ info:
     url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
   termsOfService: 'https://dev.onna.com/legal'
   title: Onna Platform API
-  version: 0.0.1
+  version: v1.0.0
 servers:
   - description: Production Server
     url: 'https://api.onna.com/v1'
@@ -153,8 +153,8 @@ paths:
             --header 'Content-Type: application/json' \
             --header 'Accept: application/json' \
             --data-raw '{
-              "name": "Foobar",
-              "parent_id": "bar-1234"
+              "name": "my-folder",
+              "onna_parent_id": "bar-1234"
             }'
   '/folders/{id}':
     delete:
@@ -232,11 +232,11 @@ paths:
           lang: cURL
           source: |
             curl --request DELETE \
-            --url 'https://api.onna.com/v1/folders/foobar' \
+            --url 'https://api.onna.com/v1/folders/my-folder' \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Accept: application/json' \
             --data '{
-                "id": "foobar-1234",
+                "id": "my-folder-1234",
             }'
     get:
       operationId: getFolderInfo
@@ -317,11 +317,11 @@ paths:
           lang: cURL
           source: |
             curl --request GET \
-            --url 'https://api.onna.com/v1/folders/foobar' \
+            --url 'https://api.onna.com/v1/folders/my-folder' \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Accept: application/json' \
             --data '{
-                "id": "foobar-1234",
+                "id": "my-folder-1234",
             }'
     patch:
       operationId: updateFolder
@@ -403,12 +403,12 @@ paths:
         - label: cURL
           lang: cURL
           source: |-
-            curl --request PATCH 'https://api.onna.com/v1/folders/foobar-123' \
+            curl --request PATCH 'https://api.onna.com/v1/folders/my-folder' \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Content-Type: application/json' \
             --header 'Accept: application/json' \
             --data-raw '{
-              "name": "foobar-abc"
+              "name": "my-new-folder"
             }'
   /health:
     get:
@@ -469,6 +469,15 @@ paths:
                 $ref: '#/components/schemas/JsonApiErrors500'
       tags:
         - Authentication
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |-
+            curl --request POST \
+              --url 'https://api.onna.com/v1/oauth/token' \
+              --header 'Content-Type: application/x-www-form-urlencoded' \
+              --data client_id="YOUR_CLIENT_ID" \
+              --data client_secret="YOUR_CLIENT_SECRET" \
   /oauth/user:
     get:
       operationId: currentUser
@@ -596,15 +605,15 @@ paths:
               "onna_parent_id": "0ec85634bf2c4d8db453a65551c36b8d",
               "ref": "Creativecommons-what-is-creative-commons_eng",
               "url": "https://wiki.creativecommons.org/images/3/35/Creativecommons-what-is-creative-commons_eng.pdf",
-              "comment": "Creative commons PDF",
+              "comment": "Creative Commons PDF",
               "creation_date": "2022-07-21T09:02:40.083388+00:00",
-              "creator": "Creative commons ORG",
-              "description": "Creative commons PDF",
+              "creator": "Creative Commons ORG",
+              "description": "Creative Commons PDF",
               "mime_type": "application/pdf",
               "name": "Creativecommons-what-is-creative-commons_eng.pdf",
               "path": "/images/3/35",
               "tags": [
-                "creative common"
+                "creative commons"
               ],
               "type": "pdf",
               "update_date": "2022-07-21T09:02:40.083388+00:00",
@@ -766,7 +775,7 @@ paths:
         - label: cURL
           lang: cURL
           source: |-
-            curl --request GET 'https://api.onna.com/v1/resources/files/conse \
+            curl --request GET 'https://api.onna.com/v1/resources/files/foobar \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Accept: application/json'
   /resources/tickets:
@@ -1006,7 +1015,7 @@ paths:
         - label: cURL
           lang: cURL
           source: |-
-            curl --request GET 'https://api.onna.com/v1/resources/tickets/my-ticket \
+            curl --request GET 'https://api.onna.com/v1/resources/tickets/foobar \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Accept: application/json'
   '/upload/{id}/tus':
@@ -1360,7 +1369,7 @@ paths:
     put:
       operationId: putUploads
       summary: Create Resource File Single Request
-      description: 'Create single request for resource file upload. '
+      description: Create single request for resource file upload.
       parameters:
         - name: id
           in: path
@@ -1599,9 +1608,10 @@ paths:
             --header 'Accept: application/json' \
             --data-raw '{
               "name": "Project X",
-              "description": "Important project",
+              "description": "Workspace for Project X",
               "tags": [
-                "top secret"
+                "project-x",
+                "feature"
               ]
             }'
   '/workspaces/{id}':
@@ -1901,6 +1911,7 @@ components:
         creation_date:
           description: Date when file was created.
           type: string
+          format: date-time
           title: Creation Date
         creator:
           description: User that created the file.
@@ -1913,6 +1924,7 @@ components:
         deletion_date:
           description: Date when file was deleted.
           type: string
+          format: date-time
           title: Deletion Date
         description:
           description: File description.
@@ -1951,6 +1963,7 @@ components:
           type: array
           items:
             type: string
+          maxItems: 1000
           title: Tags
         type:
           description: Type of file.
@@ -1959,6 +1972,7 @@ components:
         update_date:
           description: Date when the file was last updated.
           type: string
+          format: date-time
           title: Update Date
         updater:
           description: The last user to update the file.
@@ -2003,7 +2017,7 @@ components:
           type: string
           title: Parent ID
       example:
-        name: Foobar
+        name: my-folder
         onna_parent_id: 5ca9162054d84ec9850732664be18cf4
       additionalProperties: false
       required:
@@ -2035,6 +2049,7 @@ components:
           type: array
           items:
             type: string
+          maxItems: 1000
           title: Assignees
         author:
           description: The user that created the ticket.
@@ -2048,11 +2063,13 @@ components:
           description: List of messages associated to the ticket.
           type: array
           items:
-            $ref: '#/components/schemas/TicketMessages'
+            $ref: '#/components/schemas/TicketMessage'
+          maxItems: 5000
           title: Comments
         creation_date:
           description: Date when the ticket was created.
           type: string
+          format: date-time
           title: Creation Date
         description:
           description: Description.
@@ -2063,6 +2080,7 @@ components:
           type: array
           items:
             type: string
+          maxItems: 1000
           title: Followers
         name:
           description: Title.
@@ -2073,7 +2091,7 @@ components:
           type: string
           title: Parent ID
         priority:
-          description: 'Priority: high, medium, low, etc.'
+          description: 'Priority: `high`, `medium`, `low`, etc.'
           type: string
           title: Priority
         reactions:
@@ -2081,6 +2099,7 @@ components:
           type: array
           items:
             type: string
+          maxItems: 1000
           title: Reactions
         ref:
           description: The Reference Number or ID for the ticket at the origin.
@@ -2091,11 +2110,11 @@ components:
           type: string
           title: Requester
         severity:
-          description: 'Severity: high, medium, low, etc.'
+          description: 'Severity: `high`, `medium`, `low`, etc.'
           type: string
           title: Severity
         status:
-          description: 'Ticket status: open, closed, archived, etc.'
+          description: 'Ticket status: `open`, `closed`, `archived`, etc.'
           type: string
           title: Status
         subcategory:
@@ -2107,6 +2126,7 @@ components:
           type: array
           items:
             type: string
+          maxItems: 1000
           title: Tags
         type:
           description: Type of ticket.
@@ -2115,6 +2135,7 @@ components:
         update_date:
           description: Date when the ticket was last updated.
           type: string
+          format: date-time
           title: Update Date
         updater:
           description: The last user to update the ticket.
@@ -2163,15 +2184,14 @@ components:
           type: array
           items:
             type: string
+          maxItems: 10000
           title: Tags
       example:
-        description: A collection of Acmecorp Inc. support tickets from different apps.
-        name: Acmecorp support tickets
+        description: Workspace for Project X
+        name: Project X
         tags:
-          - support
-          - zendesk
-          - acemcorp
-          - tickets
+          - project-x
+          - feature
       additionalProperties: false
       required:
         - name
@@ -2588,6 +2608,7 @@ components:
         creation_date:
           description: Date when file was created.
           type: string
+          format: date-time
           title: Creation Date
         creator:
           description: User that created the file.
@@ -2600,6 +2621,7 @@ components:
         deletion_date:
           description: Date when file was deleted.
           type: string
+          format: date-time
           title: Deletion Date
         description:
           description: File description.
@@ -2662,6 +2684,7 @@ components:
           type: array
           items:
             type: string
+          maxItems: 1000
           title: Tags
         type:
           description: Type of file.
@@ -2670,6 +2693,7 @@ components:
         update_date:
           description: Date when the file was last updated.
           type: string
+          format: date-time
           title: Update Date
         updater:
           description: The last user to update the file.
@@ -2705,7 +2729,7 @@ components:
           type: string
           title: Onna ID
       example:
-        name: Foobar
+        name: my-folder
         onna_id: 8a8ead66ba6f4862b922a911dd67c439
       additionalProperties: false
       required:
@@ -2724,6 +2748,7 @@ components:
           type: array
           items:
             type: string
+          maxItems: 1000
           title: Assignees
         author:
           description: The user that created the ticket.
@@ -2737,11 +2762,13 @@ components:
           description: List of messages associated to the ticket.
           type: array
           items:
-            $ref: '#/components/schemas/TicketMessages'
+            $ref: '#/components/schemas/TicketMessage'
+          maxItems: 5000
           title: Comments
         creation_date:
           description: Date when the ticket was created.
           type: string
+          format: date-time
           title: Creation Date
         description:
           description: Description.
@@ -2752,6 +2779,7 @@ components:
           type: array
           items:
             type: string
+          maxItems: 1000
           title: Followers
         name:
           description: Title.
@@ -2770,7 +2798,7 @@ components:
           type: string
           title: Onna URL
         priority:
-          description: 'Priority: high, medium, low, etc.'
+          description: 'Priority: `high`, `medium`, `low`, etc.'
           type: string
           title: Priority
         reactions:
@@ -2778,6 +2806,7 @@ components:
           type: array
           items:
             type: string
+          maxItems: 1000
           title: Reactions
         ref:
           description: The Reference Number or ID for the ticket at the origin.
@@ -2788,11 +2817,11 @@ components:
           type: string
           title: Requester
         severity:
-          description: 'Severity: high, medium, low, etc.'
+          description: 'Severity: `high`, `medium`, `low`, etc.'
           type: string
           title: Severity
         status:
-          description: 'Ticket status: open, closed, archived, etc.'
+          description: 'Ticket status: `open`, `closed`, `archived`, etc.'
           type: string
           title: Status
         subcategory:
@@ -2804,6 +2833,7 @@ components:
           type: array
           items:
             type: string
+          maxItems: 1000
           title: Tags
         type:
           description: Type of ticket.
@@ -2812,6 +2842,7 @@ components:
         update_date:
           description: Date when the ticket was last updated.
           type: string
+          format: date-time
           title: Update Date
         updater:
           description: The last user to update the ticket.
@@ -2835,7 +2866,7 @@ components:
         - onna_id
         - onna_url
       title: ReadTicketResponse
-    TicketMessages:
+    TicketMessage:
       type: object
       properties:
         author:
@@ -2843,6 +2874,7 @@ components:
           title: Author
         creation_date:
           type: string
+          format: date-time
           title: Creation Date
         text:
           type: string
@@ -2852,7 +2884,7 @@ components:
         - author
         - creation_date
         - text
-      title: TicketMessages
+      title: TicketMessage
     UpdateFolderRequestBody:
       type: object
       properties:
@@ -2861,7 +2893,7 @@ components:
           type: string
           title: Name
       example:
-        name: Foobar
+        name: my-folder
       additionalProperties: false
       required:
         - name
@@ -2882,15 +2914,14 @@ components:
           type: array
           items:
             type: string
+          maxItems: 10000
           title: Tags
       example:
-        description: A collection of Acmecorp Inc. support tickets from different apps.
-        name: Acmecorp support tickets
+        description: Workspace for Project X
+        name: Project X
         tags:
-          - support
-          - zendesk
-          - acemcorp
-          - tickets
+          - project-x
+          - feature
       additionalProperties: false
       title: UpdateWorkspaceRequestBody
     ValidationError:
@@ -2918,6 +2949,7 @@ components:
         creation_datetime:
           description: 'The date and time when the workspace was created. The format follows the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard, with up to microsecond precision.'
           type: string
+          format: date-time
           default: ''
           title: Creation Datetime
         description:
@@ -2928,6 +2960,7 @@ components:
         modification_datetime:
           description: 'The date and time when the workspace was last updated. The format follows the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard, with up to  microsecond precision. Updates include editing metadata, sharing, and tagging the workspace.'
           type: string
+          format: date-time
           default: ''
           title: Modification Datetime
         name:
@@ -2944,16 +2977,15 @@ components:
           items:
             type: string
           default: []
+          maxItems: 10000
           title: Tags
       example:
-        description: A collection of Acmecorp Inc. support tickets from different apps.
-        name: Acmecorp support tickets
+        description: Workspace for Project X
+        name: Project X
         onna_id: 5ca9162054d84ec9850732664be18cf4
         tags:
-          - support
-          - zendesk
-          - acemcorp
-          - tickets
+          - project-x
+          - feature
       required:
         - onna_id
         - name
@@ -2972,7 +3004,7 @@ tags:
       This grant type is especially suited for machine-to-machine (M2M) applications,
       such as the applications you build on top of the Onna platform.
 
-      For more information please check our detailed [authentication docs](https://dev.onna.com/fundamentals/authentication).
+      For more information please check our detailed [authentication docs](https://dev.onna.com/get-started/authentication).
     name: Authentication
   - description: |-
       Workspaces are locations where you can collect data coming from different sources, organize it,
