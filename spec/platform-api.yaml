@@ -2996,7 +2996,7 @@ components:
       flows:
         clientCredentials:
           scopes: {}
-          tokenUrl: 'https://api.onna.com/v1/auth/token'
+          tokenUrl: 'https://api.onna.com/v1/oauth/token'
       type: oauth2
 tags:
   - description: |-
