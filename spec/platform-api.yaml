@@ -476,8 +476,9 @@ paths:
             curl --request POST \
               --url 'https://api.onna.com/v1/oauth/token' \
               --header 'Content-Type: application/x-www-form-urlencoded' \
-              --data client_id="YOUR_CLIENT_ID" \
-              --data client_secret="YOUR_CLIENT_SECRET" \
+              --data-urlencode 'client_id=YOUR_CLIENT_ID' \
+              --data-urlencode 'client_secret=YOUR_CLIENT_SECRET' \
+              --data-urlencode 'grant_type=client_credentials'
   /oauth/user:
     get:
       operationId: currentUser
@@ -1881,7 +1882,7 @@ components:
           title: Client Secret
         grant_type:
           type: string
-          default: client_credential
+          default: client_credentials
           title: Grant Type
       title: Body_login_oauth_token_post
     ClientLoginResponse:
