@@ -1451,10 +1451,10 @@ paths:
       parameters:
         - name: cursor
           in: query
-          description: cursor is a common query parameter
+          description: 'The API uses [cursoring for pagination.](https://dev.onna.com/fundamentals/api-basics/#pagination)'
           required: false
           schema:
-            description: cursor is a common query parameter
+            description: 'The API uses [cursoring for pagination.](https://dev.onna.com/fundamentals/api-basics/#pagination)'
             type: string
             title: Cursor
           example: '2022-02-22 11:11:11.12345//d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0'
@@ -1876,7 +1876,7 @@ components:
       properties:
         client_id:
           type: string
-          title: Client Id
+          title: Client ID
         client_secret:
           type: string
           title: Client Secret
@@ -2263,7 +2263,7 @@ components:
           type: string
           title: Version
       example:
-        release_id: 0.0.1
+        release_id: 1.0.0
         service_id: public-api
         status: pass
         version: v1
