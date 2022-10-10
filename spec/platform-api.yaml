@@ -7,7 +7,7 @@ info:
   description: |-
     # Introduction
 
-    ![Onna](https://developers.onna.com/assets/img/how-onna-works-chart.bdae97e4.png "Diagram showing how Onna connects to various applications")
+    ![Onna](https://onna.com/wp-content/uploads/2022/02/graphic-solutions-kip-kd.png "Diagram showing how Onna connects to various applications")
 
     The Onna Platform API enables you to programmatically upload your data into our Knowledge Integration Platform.
     This unlocks the possibility to have all your data in one place
@@ -476,8 +476,9 @@ paths:
             curl --request POST \
               --url 'https://api.onna.com/v1/oauth/token' \
               --header 'Content-Type: application/x-www-form-urlencoded' \
-              --data client_id="YOUR_CLIENT_ID" \
-              --data client_secret="YOUR_CLIENT_SECRET" \
+              --data-urlencode 'client_id=YOUR_CLIENT_ID' \
+              --data-urlencode 'client_secret=YOUR_CLIENT_SECRET' \
+              --data-urlencode 'grant_type=client_credentials'
   /oauth/user:
     get:
       operationId: currentUser
@@ -1450,10 +1451,10 @@ paths:
       parameters:
         - name: cursor
           in: query
-          description: cursor is a common query parameter
+          description: 'The API uses [cursoring for pagination.](https://dev.onna.com/fundamentals/api-basics/#pagination)'
           required: false
           schema:
-            description: cursor is a common query parameter
+            description: 'The API uses [cursoring for pagination.](https://dev.onna.com/fundamentals/api-basics/#pagination)'
             type: string
             title: Cursor
           example: '2022-02-22 11:11:11.12345//d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0'
@@ -1875,13 +1876,13 @@ components:
       properties:
         client_id:
           type: string
-          title: Client Id
+          title: Client ID
         client_secret:
           type: string
           title: Client Secret
         grant_type:
           type: string
-          default: client_credential
+          default: client_credentials
           title: Grant Type
       title: Body_login_oauth_token_post
     ClientLoginResponse:
@@ -2249,10 +2250,6 @@ components:
           description: Service version.
           type: string
           title: Release Id
-        service_id:
-          description: Unique ID for the service.
-          type: string
-          title: Service Id
         status:
           description: Result of the status check as 'pass' or 'fail'.
           type: string
@@ -2262,14 +2259,12 @@ components:
           type: string
           title: Version
       example:
-        release_id: 0.0.1
-        service_id: public-api
+        release_id: 1.0.0
         status: pass
         version: v1
       additionalProperties: false
       required:
         - status
-        - service_id
         - version
         - release_id
       title: HealthResponseBody
@@ -2950,7 +2945,6 @@ components:
           description: 'The date and time when the workspace was created. The format follows the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard, with up to microsecond precision.'
           type: string
           format: date-time
-          default: ''
           title: Creation Datetime
         description:
           description: Short description of the workspace.
@@ -2961,7 +2955,6 @@ components:
           description: 'The date and time when the workspace was last updated. The format follows the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard, with up to  microsecond precision. Updates include editing metadata, sharing, and tagging the workspace.'
           type: string
           format: date-time
-          default: ''
           title: Modification Datetime
         name:
           description: Display name of the workspace.
@@ -2996,7 +2989,7 @@ components:
       flows:
         clientCredentials:
           scopes: {}
-          tokenUrl: 'https://api.onna.com/v1/auth/token'
+          tokenUrl: 'https://api.onna.com/v1/oauth/token'
       type: oauth2
 tags:
   - description: |-
