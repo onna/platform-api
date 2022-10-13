@@ -1,0 +1,28 @@
+name: Check links in OpenAPI spec
+
+on: pull_request
+
+jobs:
+  linkChecker:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Link Checker
+        id: lychee
+        uses: lycheeverse/lychee-action@v1.5.1
+        with:
+          args: --verbose --no-progress spec/platform-api.yaml
+          fail: true
+
+      - name: Report Status
+        #if: steps.lychee.outputs.exit_code != 0
+        if: always()
+        uses: ravsamhq/notify-slack-action@v2
+        with:
+          status: ${{ job.status }}
+          notify_when: "failure"
+          notification_title: "{workflow} has {status_message}"
+          footer: "Linked Repo <{repo_url}|{repo}> | <{workflow_url}|View Workflow>"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}

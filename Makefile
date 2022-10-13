@@ -13,5 +13,5 @@ help: ## This help message
 .PHONY: spellcheck
 spellcheck: ## Run spellcheck against spec
 	@echo "$(YELLOW)==> Running spellcheck against OpenAPI spec $(RESET)"
-	docker run --rm -it -v "$(CURDIR)"/spec:/app/spec testthedocs/cspell:6.2.3-1 platform-api.yaml
+	docker run --rm -v "$(CURDIR)"/spec:/app/spec testthedocs/cspell:6.12.0 platform-api.yaml
 	
