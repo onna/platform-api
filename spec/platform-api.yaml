@@ -153,16 +153,16 @@ paths:
             --header 'Content-Type: application/json' \
             --header 'Accept: application/json' \
             --data-raw '{
-              "name": "my-folder",
-              "onna_parent_id": "bar-1234"
+              "name": "My folder",
+              "onna_parent_id": "b7c6f55fa54c4a3e821e825bd6262c0f"
             }'
-  '/folders/{id}':
+  '/folders/{onna_id}':
     delete:
       operationId: deleteFolder
       summary: Delete Folder
       description: "Delete the folder.\n\U0001F4CC This also deletes all resources contained in it!"
       parameters:
-        - name: id
+        - name: onna_id
           in: path
           description: Unique ID of the folder.
           required: true
@@ -232,18 +232,15 @@ paths:
           lang: cURL
           source: |
             curl --request DELETE \
-            --url 'https://api.onna.com/v1/folders/my-folder' \
+            --url 'https://api.onna.com/v1/folders/fd9f0c5339de42f9964e6afe9bf20259 \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
-            --header 'Accept: application/json' \
-            --data '{
-                "id": "my-folder-1234",
-            }'
+            --header 'Accept: application/json
     get:
       operationId: getFolderInfo
       summary: Retrieve Folder Info
       description: Retrieve information related to a folder.
       parameters:
-        - name: id
+        - name: onna_id
           in: path
           description: Unique ID of the folder
           required: true
@@ -315,20 +312,18 @@ paths:
       x-codeSamples:
         - label: cURL
           lang: cURL
-          source: |
+          source: |+
             curl --request GET \
-            --url 'https://api.onna.com/v1/folders/my-folder' \
+            --url 'https://api.onna.com/v1/folders/fd9f0c5339de42f9964e6afe9bf20259 \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Accept: application/json' \
-            --data '{
-                "id": "my-folder-1234",
-            }'
+
     patch:
       operationId: updateFolder
       summary: Update Folder
-      description: 'Update the folder. For example, rename it from `my-folder` to `my-new-folder`.'
+      description: 'Update the folder. For example, rename it from `My folder` to `My updated folder name`.'
       parameters:
-        - name: id
+        - name: onna_id
           in: path
           description: Unique ID of the folder
           required: true
@@ -403,12 +398,12 @@ paths:
         - label: cURL
           lang: cURL
           source: |-
-            curl --request PATCH 'https://api.onna.com/v1/folders/my-folder' \
+            curl --request PATCH 'https://api.onna.com/v1/folders/fd9f0c5339de42f9964e6afe9bf20259' \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Content-Type: application/json' \
             --header 'Accept: application/json' \
             --data-raw '{
-              "name": "my-new-folder"
+              "name": "My updated folder name"
             }'
   /health:
     get:
@@ -620,13 +615,13 @@ paths:
               "update_date": "2022-07-21T09:02:40.083388+00:00",
               "updater": "Bob"
             }'
-  '/resources/files/{id}':
+  '/resources/files/{onna_id}':
     delete:
       operationId: deleteFile
       summary: Delete File
       description: Delete the file.
       parameters:
-        - name: id
+        - name: onna_id
           in: path
           description: Unique ID of the file.
           required: true
@@ -695,7 +690,7 @@ paths:
         - label: cURL
           lang: cURL
           source: |-
-            curl --request DELETE 'https://api.onna.com/v1/resources/files/foobar \
+            curl --request DELETE 'https://api.onna.com/v1/resources/files/fs3f0c5339de42f9964e6afe9bf20169 \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Accept: application/json'
     get:
@@ -703,7 +698,7 @@ paths:
       summary: Read File
       description: Retrieve a file resource.
       parameters:
-        - name: id
+        - name: onna_id
           in: path
           description: Unique ID of the file.
           required: true
@@ -776,7 +771,7 @@ paths:
         - label: cURL
           lang: cURL
           source: |-
-            curl --request GET 'https://api.onna.com/v1/resources/files/foobar \
+            curl --request GET 'https://api.onna.com/v1/resources/files/fs3f0c5339de42f9964e6afe9bf20169 \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Accept: application/json'
   /resources/tickets:
@@ -860,13 +855,13 @@ paths:
               "ref": "f352dc9387632300d6b0a7da0acb0b60",
               "url": "https://instance.servicenow.com/api/sn_customerservice/case/f352dc9387632300d6b0a7da0acb0b60"
             }'
-  '/resources/tickets/{id}':
+  '/resources/tickets/{onna_id}':
     delete:
       operationId: deleteTicket
       summary: Delete Ticket
       description: Delete the ticket.
       parameters:
-        - name: id
+        - name: onna_id
           in: path
           description: Unique ID of the ticket.
           required: true
@@ -935,7 +930,7 @@ paths:
         - label: cURL
           lang: cURL
           source: |-
-            curl --request DELETE 'https://api.onna.com/v1/resources/tickets/foobar \
+            curl --request DELETE 'https://api.onna.com/v1/resources/tickets/tk3f0c5339de42f9964e6afe9bf20358 \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Accept: application/json'
     get:
@@ -943,7 +938,7 @@ paths:
       summary: Read Ticket
       description: Retrieve a ticket resource.
       parameters:
-        - name: id
+        - name: onna_id
           in: path
           description: Unique ID of the ticket.
           required: true
@@ -1016,7 +1011,7 @@ paths:
         - label: cURL
           lang: cURL
           source: |-
-            curl --request GET 'https://api.onna.com/v1/resources/tickets/foobar \
+            curl --request GET 'https://api.onna.com/v1/resources/tickets/tk3f0c5339de42f9964e6afe9bf20358 \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Accept: application/json'
   '/upload/{id}/tus':
@@ -1110,82 +1105,6 @@ paths:
               -H 'content-type: application/offset+octet-stream' \
               -H 'tus-resumable: 1.0.0' \
               
-    options:
-      description: 'TUS [OPTIONS](https://tus.io/protocols/resumable-upload.html#options) may be used to gather information about the Server''s current configuration.'
-      operationId: optionsUploads
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            title: Id
-        - name: authorization
-          in: header
-          description: |-
-            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
-
-            ```bash
-            Authorization: Bearer ACCESS_TOKEN
-            ```
-
-            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
-          required: false
-          schema:
-            description: |-
-              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
-
-              ```bash
-              Authorization: Bearer ACCESS_TOKEN
-              ```
-
-              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
-            type: string
-            title: Authorization
-      responses:
-        '204':
-          description: Successful Response
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JsonApiErrors401'
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JsonApiErrors403'
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JsonApiErrors404'
-        '422':
-          description: Unprocessable Entity
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JsonApiErrors422'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JsonApiErrors500'
-      summary: Options Resource File
-      tags:
-        - Upload
-      x-codeSamples:
-        - label: cURL
-          lang: cURL
-          source: |
-            curl -i 'https://api.onna.com/v1/upload/d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0/tus' \
-              -X 'OPTIONS' \
-              -H 'authorization: Bearer d3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0d3m0d3m0d3m0' \
-              -H 'content-type: application/offset+octet-stream' \
     patch:
       operationId: patchUploads
       summary: Resume Resource File Upload
@@ -1443,6 +1362,83 @@ paths:
               -X 'PUT' \
               -H 'authorization: Bearer d3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0d3m0d3m0d3m0' \
               -H 'content-type: application/offset+octet-stream' \
+  '/upload/{onna_id}/tus':
+    options:
+      description: 'TUS [OPTIONS](https://tus.io/protocols/resumable-upload.html#options) may be used to gather information about the Server''s current configuration.'
+      operationId: optionsUploads
+      parameters:
+        - name: onna_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Onna Id
+        - name: authorization
+          in: header
+          description: |-
+            The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+            ```bash
+            Authorization: Bearer ACCESS_TOKEN
+            ```
+
+            You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+          required: false
+          schema:
+            description: |-
+              The Authorization header contains your access token as a [Bearer Token](https://oauth.net/2/bearer-tokens/):
+
+              ```bash
+              Authorization: Bearer ACCESS_TOKEN
+              ```
+
+              You can obtain an access token through an OAuth flow such as the client credentials flow. For more information on obtaining an access token, see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).
+            type: string
+            title: Authorization
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      summary: Options Resource File
+      tags:
+        - Upload
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |
+            curl -i 'https://api.onna.com/v1/upload/d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0/tus' \
+              -X 'OPTIONS' \
+              -H 'authorization: Bearer d3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0deMOd3m0d3m0d3m0d3m0' \
+              -H 'content-type: application/offset+octet-stream' \
   /workspaces:
     get:
       operationId: listWorkspaces
@@ -1608,20 +1604,20 @@ paths:
             --header 'Content-Type: application/json' \
             --header 'Accept: application/json' \
             --data-raw '{
-              "name": "Project X",
-              "description": "Workspace for Project X",
+              "name": "My workspace",
+              "description": "My personal workspace",
               "tags": [
                 "project-x",
                 "feature"
               ]
             }'
-  '/workspaces/{id}':
+  '/workspaces/{onna_id}':
     delete:
       operationId: deleteWorkspace
       summary: Delete Workspace
       description: Delete a Workspace.
       parameters:
-        - name: id
+        - name: onna_id
           in: path
           description: Unique ID of the workspace.
           required: true
@@ -1691,7 +1687,7 @@ paths:
         - label: cURL
           lang: cURL
           source: |-
-            curl --location --request DELETE 'https://api.onna.com/v1/workspaces/myworkspace-ZPM9Jf4zQ \
+            curl --location --request DELETE 'https://api.onna.com/v1/workspaces/ws6f0c5339de42f9964e6afe9bf20469 \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Accept: application/json'
     get:
@@ -1699,7 +1695,7 @@ paths:
       summary: Retrieve Workspace Info
       description: Retrieve information related to a workspace.
       parameters:
-        - name: id
+        - name: onna_id
           in: path
           description: Unique ID of the workspace.
           required: true
@@ -1773,7 +1769,7 @@ paths:
         - label: cURL
           lang: cURL
           source: |-
-            curl --location --request GET 'https://api.onna.com/v1/workspaces/myworkspace-ZPM9Jf4zQ \
+            curl --location --request GET 'https://api.onna.com/v1/workspaces/ws6f0c5339de42f9964e6afe9bf20469 \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Accept: application/json
     patch:
@@ -1781,7 +1777,7 @@ paths:
       summary: Update Workspace
       description: 'Update the workspace. For example, rename it from `my-workspace` to `my-new-workspace`.'
       parameters:
-        - name: id
+        - name: onna_id
           in: path
           description: Unique ID of the workspace.
           required: true
@@ -1857,13 +1853,13 @@ paths:
         - label: cURL
           lang: cURL
           source: |-
-            curl --location --request PATCH 'https://api.onna.com/v1/workspaces/myworkspace-ZPM9Jf4zQ' \
+            curl --location --request PATCH 'https://api.onna.com/v1/workspaces/ws6f0c5339de42f9964e6afe9bf20469' \
             --header 'Authorization: Bearer <ACCESS_TOKEN>' \
             --header 'Content-Type: application/json' \
             --header 'Accept: application/json' \
             --data-raw '{
               "description": "A random workspace",
-              "name": "my-new-workspace",
+              "name": "My updated workspace",
               "tags": [
                 "random",
                 "my-company"
@@ -2018,8 +2014,8 @@ components:
           type: string
           title: Parent ID
       example:
-        name: my-folder
-        onna_parent_id: 5ca9162054d84ec9850732664be18cf4
+        name: My folder
+        onna_parent_id: b7c6f55fa54c4a3e821e825bd6262c0f
       additionalProperties: false
       required:
         - name
@@ -2188,8 +2184,8 @@ components:
           maxItems: 10000
           title: Tags
       example:
-        description: Workspace for Project X
-        name: Project X
+        description: My personal workspace
+        name: My workspace
         tags:
           - project-x
           - feature
@@ -2205,7 +2201,7 @@ components:
           type: string
           title: Onna ID
       example:
-        onna_id: 5ca9162054d84ec9850732664be18cf4
+        onna_id: ws6f0c5339de42f9964e6afe9bf20469
       required:
         - onna_id
       title: CreateWorkspaceResponseBody
@@ -2724,8 +2720,8 @@ components:
           type: string
           title: Onna ID
       example:
-        name: my-folder
-        onna_id: 8a8ead66ba6f4862b922a911dd67c439
+        name: My folder
+        onna_id: fd9f0c5339de42f9964e6afe9bf20259
       additionalProperties: false
       required:
         - onna_id
@@ -2888,7 +2884,7 @@ components:
           type: string
           title: Name
       example:
-        name: my-folder
+        name: My updated folder name
       additionalProperties: false
       required:
         - name
@@ -2912,8 +2908,8 @@ components:
           maxItems: 10000
           title: Tags
       example:
-        description: Workspace for Project X
-        name: Project X
+        description: My personal workspace
+        name: My workspace
         tags:
           - project-x
           - feature
@@ -2973,9 +2969,9 @@ components:
           maxItems: 10000
           title: Tags
       example:
-        description: Workspace for Project X
-        name: Project X
-        onna_id: 5ca9162054d84ec9850732664be18cf4
+        description: My personal workspace
+        name: My workspace
+        onna_id: ws6f0c5339de42f9964e6afe9bf20469
         tags:
           - project-x
           - feature
@@ -2985,7 +2981,7 @@ components:
       title: WorkspaceResponseBody
   securitySchemes:
     OAuth2:
-      description: The Onna API uses API keys to authenticate requests.
+      description: 'The API uses API keys to [authenticate requests](https://dev.onna.com/get-started/authentication).'
       flows:
         clientCredentials:
           scopes: {}
@@ -3000,7 +2996,7 @@ tags:
       For more information please check our detailed [authentication docs](https://dev.onna.com/get-started/authentication).
     name: Authentication
   - description: |-
-      Workspaces are locations where you can collect data coming from different sources, organize it,
+      [Workspaces](https://help.onna.com/hc/en-us/articles/4628449003292-Creating-and-Managing-Workspaces) are locations where you can collect data coming from different sources, organize it,
       and collaborate with other members of your team.
 
       You can share workspaces with collaborators with various permission levels and roles.
