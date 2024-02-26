@@ -1307,8 +1307,8 @@ components:
       type: oauth2
 info:
   contact:
-    name: Onna Community
-    url: https://community.onna.com/platform-api-questions-44
+    name: Onna Help
+    url: https://dev.onna.com/help
   description: "# Introduction\n\n![Onna](https://onna.com/wp-content/uploads/2022/02/graphic-solutions-kip-kd.png\
     \ \"Diagram showing how Onna connects to various applications\")\n\nThe Onna Platform\
     \ API enables you to programmatically upload your data into our Knowledge Integration\
@@ -2483,6 +2483,75 @@ paths:
           \ \\\n  -X 'HEAD' \\\n  -H 'Authorization: Bearer <ACCESS_TOKEN>' \\\n \
           \ -H 'content-type: application/offset+octet-stream' \\\n  -H 'tus-resumable:\
           \ 1.0.0' \\\n"
+    options:
+      description: TUS [OPTIONS](https://tus.io/protocols/resumable-upload.html#options)
+        may be used to gather information about the Server's current configuration.
+      operationId: optionsUploads
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          title: Id
+          type: string
+      - description: '`Authorization: Bearer ACCESS_TOKEN`
+
+
+          The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+          for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+        in: header
+        name: authorization
+        required: false
+        schema:
+          description: '`Authorization: Bearer ACCESS_TOKEN`
+
+
+            The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+            for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+          title: Authorization
+          type: string
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+          description: Unprocessable Entity
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+          description: Internal Server Error
+      summary: Options Resource File
+      tags:
+      - Upload
+      x-codeSamples:
+      - label: cURL
+        lang: cURL
+        source: "curl -i 'https://api.onna.com/v1/upload/d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0/tus'\
+          \ \\\n  -X 'OPTIONS' \\\n  -H 'Authorization: Bearer <ACCESS_TOKEN>' \\\n\
+          \  -H 'content-type: application/offset+octet-stream' \\\n"
     patch:
       description: TUS [PATCH](https://tus.io/protocols/resumable-upload.html#patch)
         applies partial modifications to a resource.
@@ -2982,76 +3051,6 @@ paths:
         source: "curl -i 'https://api.onna.com/v1/upload/d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0/tus'\
           \ \\\n  -X 'PUT' \\\n  -H 'Authorization: Bearer <ACCESS_TOKEN>' \\\n  -H\
           \ 'content-type: application/offset+octet-stream' \\"
-  /upload/{onna_id}/tus:
-    options:
-      description: TUS [OPTIONS](https://tus.io/protocols/resumable-upload.html#options)
-        may be used to gather information about the Server's current configuration.
-      operationId: optionsUploads
-      parameters:
-      - in: path
-        name: onna_id
-        required: true
-        schema:
-          title: Onna Id
-          type: string
-      - description: '`Authorization: Bearer ACCESS_TOKEN`
-
-
-          The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
-          for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
-        in: header
-        name: authorization
-        required: false
-        schema:
-          description: '`Authorization: Bearer ACCESS_TOKEN`
-
-
-            The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
-            for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
-          title: Authorization
-          type: string
-      responses:
-        '204':
-          description: Successful Response
-        '401':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JsonApiErrors401'
-          description: Unauthorized
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JsonApiErrors403'
-          description: Forbidden
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JsonApiErrors404'
-          description: Not Found
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JsonApiErrors422'
-          description: Unprocessable Entity
-        '500':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JsonApiErrors500'
-          description: Internal Server Error
-      summary: Options Resource File
-      tags:
-      - Upload
-      x-codeSamples:
-      - label: cURL
-        lang: cURL
-        source: "curl -i 'https://api.onna.com/v1/upload/d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0/tus'\
-          \ \\\n  -X 'OPTIONS' \\\n  -H 'Authorization: Bearer <ACCESS_TOKEN>' \\\n\
-          \  -H 'content-type: application/offset+octet-stream' \\\n"
   /workspaces:
     get:
       description: List workspaces.
