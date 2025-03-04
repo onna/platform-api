@@ -1,6 +1,6 @@
 components:
   schemas:
-    Body_login_oauth_token_post:
+    Body_oauthTokenResponse:
       properties:
         client_id:
           description: Unique client ID, generated in the Platform API app.
@@ -15,7 +15,7 @@ components:
           description: Use the default value.
           title: Grant Type
           type: string
-      title: Body_login_oauth_token_post
+      title: Body_oauthTokenResponse
       type: object
     CreateCustomFieldRequestBody:
       additionalProperties: false
@@ -114,7 +114,7 @@ components:
           description: 'File status: Deleted, Archived, etc.'
           title: Status
           type: string
-        tags:
+        origin_tags:
           description: List of tags associated to the file in the origin.
           items:
             type: string
@@ -159,6 +159,19 @@ components:
       - onna_id
       title: CreateFileResponse
       type: object
+    UpdateFileBody:
+      type: object
+      description: Request body for updating a file resource. The provided tags will be stored as Onna tags.
+      properties:
+        tags:
+          type: array
+          description: List of new Onna tags for the file.
+          items:
+            type: string
+      required:
+        - tags
+      example:
+        tags: ["confidential", "draft"]
     CreateFolderRequestBody:
       additionalProperties: false
       example:
@@ -280,7 +293,7 @@ components:
           description: Subcategory.
           title: Subcategory
           type: string
-        tags:
+        origin_tags:
           description: List of tags associated to the ticket in the origin.
           items:
             type: string
@@ -322,6 +335,59 @@ components:
       - onna_id
       title: CreateTicketResponse
       type: object
+    UpdateTicketBody:
+      type: object
+      description: Request body for updating a ticket resource. The provided tags will be stored as Onna tags.
+      properties:
+        tags:
+          type: array
+          description: List of new Onna tags for the ticket.
+          items:
+            type: string
+      required:
+        - tags
+      example:
+        tags: ["critical", "backend"]
+    CreateWalletEntryRequestBody:
+      additionalProperties: false
+      example:
+        credentials: ASECR3TT0K3N
+        metadata:
+          key: value
+        name: wallet1
+      properties:
+        credentials:
+          anyOf:
+          - type: string
+          - type: object
+          description: Credentials to store in the wallet entry.
+          title: Credentials
+        metadata:
+          description: Metadata associated with the credentials to store.
+          title: Metadata
+          type: object
+        name:
+          default: Public API Wallet Entry
+          description: Display name of the wallet entry.
+          title: Name
+          type: string
+      required:
+      - credentials
+      title: CreateWalletEntryRequestBody
+      type: object
+    CreateWalletEntryResponseBody:
+      additionalProperties: false
+      example:
+        onna_id: 006334fe06174ccaa2d1710a37e6d7f6
+      properties:
+        onna_id:
+          description: Alphanumeric unique identifier of the wallet entry.
+          title: Onna ID
+          type: string
+      required:
+      - onna_id
+      title: CreateWalletEntryResponseBody
+      type: object
     CreateWorkspaceRequestBody:
       additionalProperties: false
       example:
@@ -335,6 +401,10 @@ components:
           description: Short description of the workspace.
           title: Description
           type: string
+        embeddings_enabled:
+          description: Flag to enable or disable embeddings calculation for the workspace.
+          title: Embeddings Enabled
+          type: boolean
         name:
           description: Display name of the workspace.
           title: Name
@@ -872,6 +942,58 @@ components:
       - items
       title: PageResponseBody
       type: object
+    RagRequestBody:
+      additionalProperties: false
+      example:
+        context_ids:
+        - b7c6f55fa54c4a3e821e825bd6262c0f
+        query: When Perseverance landed on Mars?
+        wallet_id: 006334fe06174ccaa2d1710a37e6d7f6
+      properties:
+        context_ids:
+          description: The Onna IDs of the parent Workspaces or Folders to be used
+            as a context.
+          items:
+            type: string
+          title: Parent ID
+          type: array
+        query:
+          description: Query to be answered.
+          title: Query
+          type: string
+        wallet_id:
+          description: Wallet entry with the LLM credentials.
+          title: Wallet Id
+          type: string
+      required:
+      - query
+      - context_ids
+      - wallet_id
+      title: RagRequestBody
+      type: object
+    RagResponseBody:
+      additionalProperties: false
+      example:
+        references:
+        - https://nasa.com/foo
+        - https://nasa.com/bar
+        response: Perseverance landed on Mars in February 2021.
+      properties:
+        references:
+          description: The Onna links to the documents that answer the query.
+          items:
+            type: string
+          title: References
+          type: array
+        response:
+          description: The answer to the query.
+          title: Response
+          type: string
+      required:
+      - response
+      - references
+      title: RagResponseBody
+      type: object
     ReadFileResponse:
       additionalProperties: false
       example:
@@ -939,6 +1061,15 @@ components:
           description: Path to file, at the origin.
           title: Path
           type: string
+        processing_date:
+          description: Date when file was processed.
+          format: date-time
+          title: Processing Date
+          type: string
+        processing_exception:
+          description: Processing exception.
+          title: Processing Exception
+          type: string
         ref:
           description: The Reference Number or ID for the file at the origin.
           title: Reference
@@ -955,7 +1086,7 @@ components:
           description: 'File status: Deleted, Archived, etc.'
           title: Status
           type: string
-        tags:
+        origin_tags:
           description: List of tags associated to the file in the origin.
           items:
             type: string
@@ -1107,7 +1238,7 @@ components:
           description: Subcategory.
           title: Subcategory
           type: string
-        tags:
+        origin_tags:
           description: List of tags associated to the ticket in the origin.
           items:
             type: string
@@ -1139,6 +1270,48 @@ components:
       - onna_id
       - onna_url
       title: ReadTicketResponse
+      type: object
+    ReadWalletEntryResponseBody:
+      additionalProperties: false
+      example:
+        creation_datetime: '2021-08-25T12:00:00Z'
+        metadata:
+          key: value
+        modification_datetime: '2021-08-25T12:00:00Z'
+        name: Public API Wallet Entry
+        onna_id: ws6f0c5339de42f9964e6afe9bf20469
+      properties:
+        creation_datetime:
+          description: The date and time when the wallet entry was created. The format
+            follows the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard,
+            with up to microsecond precision.
+          format: date-time
+          title: Creation Datetime
+          type: string
+        metadata:
+          description: Metadata associated with the credentials to store.
+          title: Metadata
+          type: object
+        modification_datetime:
+          description: The date and time when the wallet entry was last updated. The
+            format follows the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)
+            standard, with up to  microsecond precision. Updates include editing metadata,
+            sharing, and tagging the wallet entry.
+          format: date-time
+          title: Modification Datetime
+          type: string
+        name:
+          description: Display name of the wallet entry.
+          title: Name
+          type: string
+        onna_id:
+          description: Alphanumeric unique identifier of the wallet entry.
+          title: Onna ID
+          type: string
+      required:
+      - onna_id
+      - name
+      title: ReadWalletEntryResponseBody
       type: object
     TicketMessage:
       additionalProperties: false
@@ -1172,6 +1345,30 @@ components:
       - name
       title: UpdateFolderRequestBody
       type: object
+    UpdateWalletEntryRequestBody:
+      additionalProperties: false
+      example:
+        credentials: ASECR3TT0K3N
+        metadata:
+          key: value
+        name: wallet1
+      properties:
+        credentials:
+          anyOf:
+          - type: string
+          - type: object
+          description: Credentials to store in the wallet entry.
+          title: Credentials
+        metadata:
+          description: Metadata associated with the credentials to store.
+          title: Metadata
+          type: object
+        name:
+          description: Display name of the wallet entry.
+          title: Name
+          type: string
+      title: UpdateWalletEntryRequestBody
+      type: object
     UpdateWorkspaceCustomValueRequestBody:
       example:
         value: My custom field value
@@ -1197,6 +1394,10 @@ components:
           description: Short description of the workspace.
           title: Description
           type: string
+        embeddings_enabled:
+          description: Flag to enable or disable embeddings calculation for the workspace.
+          title: Embeddings Enabled
+          type: boolean
         name:
           description: Display name of the workspace.
           title: Name
@@ -1215,7 +1416,9 @@ components:
       properties:
         loc:
           items:
-            type: string
+            anyOf:
+            - type: string
+            - type: integer
           title: Location
           type: array
         msg:
@@ -1350,7 +1553,7 @@ info:
   termsOfService: https://dev.onna.com/legal
   title: Onna Platform API
   version: v1.1.0
-openapi: 3.0.2
+openapi: 3.1.0
 paths:
   /customFields:
     get:
@@ -1850,7 +2053,7 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Body_login_oauth_token_post'
+              $ref: '#/components/schemas/Body_oauthTokenResponse'
       responses:
         '200':
           content:
@@ -1929,6 +2132,73 @@ paths:
       summary: Current User
       tags:
       - Authentication
+  /rag/query:
+    post:
+      description: Query the RAG model.
+      operationId: ragQuery
+      parameters:
+      - description: '`Authorization: Bearer ACCESS_TOKEN`
+
+
+          The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+          for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+        in: header
+        name: authorization
+        required: false
+        schema:
+          description: '`Authorization: Bearer ACCESS_TOKEN`
+
+
+            The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+            for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+          title: Authorization
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RagRequestBody'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RagResponseBody'
+          description: Successful Response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+          description: Internal Server Error
+      summary: Query the RAG model
+      tags:
+      - RAG
   /resources/files:
     post:
       description: Create a file resource.
@@ -2072,6 +2342,83 @@ paths:
           --header ''Authorization: Bearer <ACCESS_TOKEN>'' \
 
           --header ''Accept: application/json'''
+  /resources/files/{onna_id}:
+    patch:
+      summary: Update File
+      description: Update a file resource.
+      operationId: updateFile
+      parameters:
+        - name: onna_id
+          in: path
+          required: true
+          description: Unique ID of the file.
+          schema:
+            title: ID
+            type: string
+        - description: '`Authorization: Bearer ACCESS_TOKEN`
+
+          The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+          for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+          in: header
+          name: authorization
+          required: false
+          schema:
+            title: Authorization
+            type: string
+            description: '`Authorization: Bearer ACCESS_TOKEN`
+
+              The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+              for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFileBody'
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+        '404':
+          description: File not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+        '422':
+          description: Unprocessable Entity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+        '500':
+          description: Internal Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+      tags:
+        - 'Resources: Files'
+      x-codeSamples:
+        - label: cURL
+          lang: cURL
+          source: |
+            curl --request PATCH 'https://api.onna.com/v1/resources/files/<ONNA_ID>' \
+            --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+            --header 'Content-Type: application/json' \
+            --header 'Accept: application/json' \
+            --data '{ "tags": ["confidential", "draft"] }'
     get:
       description: Retrieve a file resource.
       operationId: retrieveFile
@@ -2101,7 +2448,7 @@ paths:
           title: Authorization
           type: string
       responses:
-        '201':
+        '200':
           content:
             application/json:
               schema:
@@ -2370,6 +2717,83 @@ paths:
           --header ''Authorization: Bearer <ACCESS_TOKEN>'' \
 
           --header ''Accept: application/json'''
+    /resources/tickets/{onna_id}:
+      patch:
+        summary: Update Ticket
+        description: Update a ticket resource.
+        operationId: updateTicket
+        parameters:
+          - name: onna_id
+            in: path
+            required: true
+            description: Unique ID of the ticket.
+            schema:
+              title: ID
+              type: string
+          - description: '`Authorization: Bearer ACCESS_TOKEN`
+
+            The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+            for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+            in: header
+            name: authorization
+            required: false
+            schema:
+              title: Authorization
+              type: string
+              description: '`Authorization: Bearer ACCESS_TOKEN`
+
+                The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+                for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateTicketBody'
+        responses:
+          '204':
+            description: Successful Response
+          '401':
+            description: Unauthorized.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/JsonApiErrors401'
+          '403':
+            description: Forbidden.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/JsonApiErrors403'
+          '404':
+            description: Ticket not found.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/JsonApiErrors404'
+          '422':
+            description: Unprocessable Entity.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/JsonApiErrors422'
+          '500':
+            description: Internal Server Error.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/JsonApiErrors500'
+        tags:
+          - 'Resources: Tickets'
+        x-codeSamples:
+          - label: cURL
+            lang: cURL
+            source: |
+              curl --request PATCH 'https://api.onna.com/v1/resources/tickets/<ONNA_ID>' \
+              --header 'Authorization: Bearer <ACCESS_TOKEN>' \
+              --header 'Content-Type: application/json' \
+              --header 'Accept: application/json' \
+              --data '{ "tags": ["critical", "backend"] }'
   /upload/{id}/tus:
     head:
       description: '[HEAD](https://tus.io/protocols/resumable-upload.html#head) a
@@ -3051,6 +3475,291 @@ paths:
         source: "curl -i 'https://api.onna.com/v1/upload/d3m0d3m0d3m0d3m0d3m0d3m0d3m0d3m0/tus'\
           \ \\\n  -X 'PUT' \\\n  -H 'Authorization: Bearer <ACCESS_TOKEN>' \\\n  -H\
           \ 'content-type: application/offset+octet-stream' \\"
+  /wallet:
+    post:
+      description: Create a wallet entry.
+      operationId: createWalletEntry
+      parameters:
+      - description: '`Authorization: Bearer ACCESS_TOKEN`
+
+
+          The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+          for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+        in: header
+        name: authorization
+        required: false
+        schema:
+          description: '`Authorization: Bearer ACCESS_TOKEN`
+
+
+            The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+            for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+          title: Authorization
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWalletEntryRequestBody'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateWalletEntryResponseBody'
+          description: Successful Response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+          description: Unprocessable Entity
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+          description: Internal Server Error
+      summary: Create Wallet Entry
+      tags:
+      - Wallet
+      x-codeSamples:
+      - label: cURL
+        lang: cURL
+        source: "curl --request POST \\\n--url 'https://api.onna.com/v1/wallet' \\\
+          \n--header 'Authorization: Bearer <ACCESS_TOKEN>' \\\n--header 'Content-Type:\
+          \ application/json' \\\n--data '{\n    \"name\":\"My wallet\",\n    \"credentials\"\
+          :\"token\",\n    \"metadata\":{\"a_field\":\"a_value\"}\n}'\n"
+  /wallet/{onna_id}:
+    delete:
+      description: Delete a wallet entry
+      operationId: deleteWalletEntry
+      parameters:
+      - description: Unique ID of the wallet entry.
+        in: path
+        name: onna_id
+        required: true
+        schema:
+          description: Unique ID of the wallet entry.
+          title: ID
+          type: string
+      - description: '`Authorization: Bearer ACCESS_TOKEN`
+
+
+          The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+          for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+        in: header
+        name: authorization
+        required: false
+        schema:
+          description: '`Authorization: Bearer ACCESS_TOKEN`
+
+
+            The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+            for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+          title: Authorization
+          type: string
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Delete wallet entry
+      tags:
+      - Wallet
+      x-codeSamples:
+      - label: cURL
+        lang: cURL
+        source: 'curl --location --request DELETE ''https://api.onna.com/v1/wallet/f601fdfadf5c4bea99186f24bc7aa306''
+          \
+
+          --header ''Authorization: Bearer <ACCESS_TOKEN>'' \
+
+          --header ''Accept: application/json'''
+    get:
+      description: Retrieve information related to a wallet entry.
+      operationId: getWalletEntryInfo
+      parameters:
+      - description: Unique ID of the wallet entry.
+        in: path
+        name: onna_id
+        required: true
+        schema:
+          description: Unique ID of the wallet entry.
+          title: ID
+          type: string
+      - description: '`Authorization: Bearer ACCESS_TOKEN`
+
+
+          The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+          for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+        in: header
+        name: authorization
+        required: false
+        schema:
+          description: '`Authorization: Bearer ACCESS_TOKEN`
+
+
+            The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+            for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+          title: Authorization
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadWalletEntryResponseBody'
+          description: Successful Response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+          description: Unprocessable Entity
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+          description: Internal Server Error
+      summary: Retrieve wallet entry info
+      tags:
+      - Wallet
+      x-codeSamples:
+      - label: cURL
+        lang: cURL
+        source: 'curl --request GET \
+
+          --url ''https://api.onna.com/v1/wallet/f601fdfadf5c4bea99186f24bc7aa306''
+          \
+
+          --header ''Authorization: Bearer <ACCESS_TOKEN>'' \
+
+          --header ''Accept: application/json'' \
+
+
+          '
+    patch:
+      description: Update the wallet entry. For example, rename it, update the credentials
+        or the metadata.
+      operationId: updateWalletEntry
+      parameters:
+      - description: Unique ID of the wallet entry.
+        in: path
+        name: onna_id
+        required: true
+        schema:
+          description: Unique ID of the wallet entry.
+          title: ID
+          type: string
+      - description: '`Authorization: Bearer ACCESS_TOKEN`
+
+
+          The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+          for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+        in: header
+        name: authorization
+        required: false
+        schema:
+          description: '`Authorization: Bearer ACCESS_TOKEN`
+
+
+            The Authorization header must contain a [Bearer Token](https://oauth.net/2/bearer-tokens/),
+            for more information see ["Obtaining an access token"](https://dev.onna.com/get-started/authentication/).'
+          title: Authorization
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWalletEntryRequestBody'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors401'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors403'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors404'
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors422'
+          description: Unprocessable Entity
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiErrors500'
+          description: Internal Server Error
+      summary: Update Wallet Entry
+      tags:
+      - Wallet
+      x-codeSamples:
+      - label: cURL
+        lang: cURL
+        source: "curl --location --request PATCH 'https://api.onna.com/v1/wallet/f601fdfadf5c4bea99186f24bc7aa306'\
+          \ \\\n--header 'Authorization: Bearer <ACCESS_TOKEN>' \\\n--header 'Content-Type:\
+          \ application/json' \\\n--header 'Accept: application/json' \\\n--data '{\n\
+          \    \"name\":\"My wallet\",\n    \"credentials\":\"token\",\n    \"metadata\"\
+          :{\"a_field\":\"a_value\"}\n}'"
   /workspaces:
     get:
       description: List workspaces.
@@ -3870,3 +4579,12 @@ tags:
   name: Upload
 - description: API Utils, such as the `health` endpoint.
   name: Utils
+- description: 'The Wallet is a store where external credentials are stored in Onna
+    platform. A WalletEntry is an entity that holds a single
+
+    credential. It can be either a plain string or a JSON object and can store additional
+    metadata as well.
+
+
+    This collection includes all the endpoints that enable you to work.'
+  name: Wallet
