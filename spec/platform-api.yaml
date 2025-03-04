@@ -2342,7 +2342,6 @@ paths:
           --header ''Authorization: Bearer <ACCESS_TOKEN>'' \
 
           --header ''Accept: application/json'''
-  /resources/files/{onna_id}:
     patch:
       summary: Update File
       description: Update a file resource.
